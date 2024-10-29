@@ -1,0 +1,4 @@
+Postgresql Notes
+
+Database 
+- An organized collection of data or a method to manipulate and access the data
