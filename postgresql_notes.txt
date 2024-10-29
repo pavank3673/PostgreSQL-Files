@@ -2,3 +2,189 @@ Postgresql Notes
 
 Database 
 - An organized collection of data or a method to manipulate and access the data
+
+Relational Database Management System (RDBMS)
+- A type of database system to store data in structured tables (rows and columns) & uses SQL for querying data
+
+Structured Query Language (SQL)
+- Language to interact with the database
+
+SELECT version(); - displays postgreSQL version 
+
+Database related queries
+- CREATE DATABASE <name> WITH OWNER <user>; - creates database
+- SELECT datname FROM pg_database; - list of existing databases 
+- ALTER DATABASE <name> OWNER TO <another_user>; - change the owner of database  
+- DROP DATABASE test; - drops the database
+
+User related queries
+- CREATE USER demouser WITH PASSWORD 'demo'; - creates new user
+- ALTER USER demouser RENAME TO demooneuser; - renames user
+- DROP USER demooneuser; - drops user (REASSIGN OWNED BY demooneuser TO postgres; - first execute this command if user owns any database, then drop command)
+
+Table 
+- It is a collection of related data held in table format within database
+- CREATE TABLE person (
+    id INT,
+    name VARCHAR(100),
+    city VARCHAR(100)
+  ); - syntax
+
+INSERT INTO person(id, name, city) VALUES (101, 'sam', 'cityone'); - record insertion syntax
+(or)
+INSERT INTO person(id, name, city) VALUES (102, 'steve', 'citytwo'), (103, 'adam','citythree');
+(or)
+INSERT INTO person VALUES (104, 'scott', 'cityfour'); - when inserting all column values & same sequence of table columns
+
+SELECT * FROM person; - displays all records in table
+(or)
+SELECT name, city FROM person; - displays specific column records in table
+
+UPDATE person SET city = 'updatecity' WHERE name = 'scott'; - update record in table
+
+DELETE FROM person WHERE id = 103; - delete record in table
+
+Datatypes
+- An attribute that specifies the type of data in a column in database
+
+Constraint
+- A constraint is a rule applied to a column
+- Can use multiple constraints on same column
+
+1. Primary key
+- It uniquely identifies each record in a table
+- It must contain unique values & is not null
+- A table can have only one primary key
+
+2. Not null
+- It specifies a column values should not be null
+
+3. Default
+- It specifies a default value to column record if value not set 
+- DEFAULT 'default_value' - syntax
+
+4. Check
+- It specifies a condition to column which allows to insert data if condition pass
+- CHECK (LENGTH(col_name) >= 10) - syntax
+- Named Constraint
+    CREATE TABLE demoone (
+      mob VARCHAR(10) NOT NULL,
+      CONSTRAINT mob_less_than_10digits CHECK (LENGTH(mob) >= 10)
+    );  - syntax
+
+5. Foreign key
+- A column in table which is the primary key column of another table
+- FOREIGN KEY(col_name) REFERENCES parent_table(parent_table_col) - syntax
+
+SERIAL - datatype to auto increment integer numbers
+SELECT setval('employees_emp_id_seq',10); - update the auto increment value of SERIAL 
+SELECT currval('employees_emp_id_seq'); - display current auto increment value of SERIAL
+
+WHERE clause
+- to fetch records of table based on condition
+SELECT * FROM employees WHERE emp_id = 12; - syntax
+
+AND, OR logical operators
+select * from employees WHERE dept = 'HR' OR dept = 'Finance'; - fetch records which matches either of conditions
+select * from employees WHERE dept = 'IT' AND salary > 40000; - fetch records which both conditions match
+
+Relational operators (<, >, <=, >=, =, !=)
+select * from employees WHERE salary > 40000; - fetch records which salary greater than 40000
+
+IN, NOT IN operators
+SELECT * FROM employees WHERE dept IN ('HR','Finance'); - fetch records which dept matches either HR or Finance
+SELECT * FROM employees WHERE dept NOT IN ('HR','Finance'); - fetch records which dept donot match HR and Finance
+
+BETWEEN operators
+SELECT * FROM employees WHERE salary BETWEEN 50000 AND 60000; - fetch records which salary >= 50000 and <= 60000
+
+DISTINCT clause
+SELECT DISTINCT dept FROM employees; - fetch records with unique column values
+
+ORDER BY clause
+SELECT * FROM employees ORDER BY fname; - displays records with specified column value ascending
+SELECT * FROM employees ORDER BY fname DESC; - displays records with specified column value descending
+
+LIMIT clause
+SELECT * FROM employees LIMIT 5; - displays only no of records specified by limit
+
+LIKE clause
+- fetch records based on given pattern
+SELECT * FROM employees WHERE fname LIKE 'a%'; - fetch records fname start with a
+SELECT * FROM employees WHERE fname LIKE '%a'; - fetch records fname ends with a
+SELECT * FROM employees WHERE fname LIKE '%a%'; - fetch records fname contains a
+SELECT * FROM employees WHERE fname LIKE '_a%'; - fetch records fname second character a
+SELECT * FROM employees WHERE fname ILIKE 'a%'; - fetch records fname start with a case insensitive
+
+Aggregate Functions
+1. count()
+- displays the total records count of table
+SELECT COUNT(emp_id) FROM employees; - syntax
+
+2. sum()
+- displays the sum of all values in specified column
+SELECT SUM(salary) FROM employees; - syntax
+
+3. avg()
+- displays the average value of all values in specified column
+SELECT AVG(salary) FROM employees; - syntax
+
+4. min()
+- displays the minimum value of all values in specified column
+SELECT MIN(salary) FROM employees; - syntax
+
+5. max()
+- displays the maximum value of all values in specified column
+SELECT MAX(salary) FROM employees; - syntax
+
+
+Alter Table
+1. Add column
+ - ALTER TABLE person ADD COLUMN age INT DEFAULT 0; - syntax
+
+2. Drop column
+- ALTER TABLE person DROP COLUMN age; - syntax
+
+3. Rename column
+- ALTER TABLE person RENAME COLUMN name to fname; - syntax
+
+4. Rename table
+- ALTER TABLE persons RENAME TO person; - syntax
+
+5. Modify column (data type or constraint)
+- ALTER TABLE person ALTER COLUMN fname SET DATA TYPE VARCHAR(150); - syntax for modify datatype
+- ALTER TABLE person ALTER COLUMN fname SET NOT NULL; - syntax for modify constraint
+- ALTER TABLE person ALTER COLUMN fname DROP NOT NULL; - syntax for removing constraint of column
+
+6. Add Constraint
+- It adds constraint to column in table
+- ALTER TABLE person ADD CONSTRAINT person_mob_condition CHECK (LENGTH(mob) > 3); - syntax
+
+7. Drop Constraint
+- It removes constraint of column in table
+- ALTER TABLE person DROP CONSTRAINT person_mob_condition; - syntax
+
+Truncate Table
+- Removes all records of table and retains only the table structure
+- TRUNCATE <table_name>; - syntax
+
+Drop Table
+- Drops the entire table including table structure
+- DROP TABLE <table_name>; - syntax
+
+CASE Expression
+- Similar to if else statements in programming languages
+- SELECT fname, salary,
+  CASE 
+	  WHEN salary >55000 THEN 'HIGH'
+	  WHEN salary BETWEEN 48000 AND 55000 THEN 'MID'
+	  ELSE 'LOW'
+  END AS sal_cat FROM employees; - syntax
+
+
+Relationship
+- Two or more tables connected or linked 
+- Types
+ 1. one to one - one record in table is linked to one record in another table
+ 2. one to many - one record in table is linked to >1 record in another table
+ 3. many to many - >1 record in table is linked to >1 record in another table
