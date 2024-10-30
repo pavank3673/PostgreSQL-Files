@@ -19,8 +19,13 @@ Database related queries
 
 User related queries
 - CREATE USER demouser WITH PASSWORD 'demo'; - creates new user
+- CREATE USER demouser WITH PASSWORD 'demo' SUPERUSER; - creates new user with superuser privileges
 - ALTER USER demouser RENAME TO demooneuser; - renames user
+- ALTER USER demoone SUPERUSER; - provide user with superuser privileges
+- ALTER USER demoone  NOSUPERUSER; - revoke user with superuser privileges
 - DROP USER demooneuser; - drops user (REASSIGN OWNED BY demooneuser TO postgres; - first execute this command if user owns any database, then drop command)
+- SELECT * FROM pg_user; - displays list of users
+- SET ROLE demotwo; - switch user
 
 Table 
 - It is a collection of related data held in table format within database
@@ -153,7 +158,7 @@ Alter Table
 
 5. Modify column (data type or constraint)
 - ALTER TABLE person ALTER COLUMN fname SET DATA TYPE VARCHAR(150); - syntax for modify datatype
-- ALTER TABLE person ALTER COLUMN fname SET NOT NULL; - syntax for modify constraint
+- ALTER TABLE person ALTER COLUMN fname SET NOT NULL; - syntax for modify constraint to not null
 - ALTER TABLE person ALTER COLUMN fname DROP NOT NULL; - syntax for removing constraint of column
 
 6. Add Constraint
@@ -188,3 +193,96 @@ Relationship
  1. one to one - one record in table is linked to one record in another table
  2. one to many - one record in table is linked to >1 record in another table
  3. many to many - >1 record in table is linked to >1 record in another table
+
+Data Control Statement (DCL)
+- It is used to provide different users access to stored data
+- It enables data administrator to grant or revoke required access to act as the database
+Types
+1. Grant 
+- It allows the administrator to provide particular privileges over database object such as table, view, procedure
+
+2. Revoke 
+- It enable database administrator to remove previously provided privileges from user over database object
+
+List of Privileges 
+- SELECT - table, table column, sequence
+  GRANT SELECT ON TABLE people TO demoone; - syntax
+
+- INSERT - table, table column
+  GRANT INSERT ON TABLE people TO demoone; - syntax
+
+- UPDATE - table, table column, sequence
+  GRANT UPDATE ON TABLE people TO demoone; - syntax
+
+- DELETE - table
+  GRANT DELETE ON TABLE people TO demoone; - syntax
+
+- TRUNCATE - table
+  GRANT TRUNCATE ON TABLE tmtable TO demoone; - syntax
+
+- REFERENCES - table, table column
+  GRANT REFERENCES ON TABLE tmtable TO demoone; - syntax
+
+- TRIGGER - table
+
+- CREATE - database, schema, table
+  GRANT CREATE ON SCHEMA public TO demoone; - syntax
+
+- CONNECT - database
+- TEMPORARY - database(to create table)
+
+- EXECUTE - function, procedure
+
+- USAGE - foreign servers
+- SET - server configuration
+- ALTER SYSTEM - server configuration 
+
+- MAINTAIN 
+
+Keys 
+- It is important aspect of DBMS which help to uniquely identify the rows in column 
+
+Types 
+1. Candidate key 
+- Any individual column in table that qualifies for uniqueness of all the rows
+
+2. Primary key 
+- There can be more than one candidate key in relation out of which one can be chosen as primary key
+- It cannot be null
+
+3. Alternate key 
+- Candidate column other than the primary column would be alternate key
+
+4. Super key
+- Add any other column to primary key then it becomes a super key
+
+5. Composite key 
+- If a table don't have any individual columns that qualifies for a candidate key then select 2 or more columns to make row unique
+
+6. Foreign key 
+- It acts as primary key in one table and it acts as secondary key in another table 
+
+Joins
+- It is used to combine rows from two or more tables based on a related column between them
+
+Types
+1. Cross Join 
+- Every row from one table is combined with every row from another table
+ SELECT * FROM customers CROSS JOIN orders; - syntax
+
+2. Inner Join 
+- Returns only the rows where there is a match between the specified columns in both the left & right tables
+  SELECT * FROM customers INNER JOIN orders ON customers.cust_id = orders.cust_id; - syntax
+  (or)
+  SELECT * FROM customers JOIN orders ON customers.cust_id = orders.cust_id; - syntax
+
+3. Left Join
+- Returns all rows from the left table and the matching rows from the right table 
+ SELECT * FROM customers LEFT JOIN orders ON customers.cust_id = orders.cust_id; - syntax
+
+4. Right Join
+- Returns all rows from the right table and the matching rows from the right table 
+ SELECT * FROM customers RIGHT JOIN orders ON customers.cust_id = orders.cust_id; - syntax 
+
+Sub Query
+- A query inside another query is sub query  
