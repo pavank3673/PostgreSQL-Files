@@ -285,4 +285,83 @@ Types
  SELECT * FROM customers RIGHT JOIN orders ON customers.cust_id = orders.cust_id; - syntax 
 
 Sub Query
-- A query inside another query is sub query  
+- A query inside another query is sub query 
+ SELECT * FROM employees WHERE hire_date = (SELECT MAX(hire_date) FROM employees); - syntax
+
+Types
+1. Scalar subqueries
+- A query that returns a single value. It can be used in various parts of a query where a single value is expected
+
+2. Row subqueries
+- A query that returns a single row with multiple columns. It can be used in situations where a single row is expected.
+
+3. Column subqueries
+- It retrieves data from one or more columns in a subquery and then uses that result as a column or value in the main query's result set.
+
+4. Table subqueries
+- It returns a result set or table
+
+Subqueries in WHERE clause
+ SELECT * FROM employees WHERE department IN ( SELECT DISTINCT department FROM employees WHERE department LIKE '%Engineering%' OR department LIKE '%Sales%'); - syntax
+(or)
+ SELECT first_name, salary FROM employees WHERE salary < (SELECT MAX(salary) FROM employees);
+
+Subqueries in FROM & JOIN Clause 
+ SELECT e1.first_name, e1.last_name, e1.department FROM employees AS e1 INNER JOIN ( SELECT department FROM employees WHERE first_name = 'John' AND last_name = 'Doe') AS e2 ON e1.department = e2.department; - syntax
+
+Subqueries in SELECT Clause 
+ SELECT e.department, COUNT(*) AS total_employees,(SELECT AVG(salary) FROM employees e2 WHERE e2.department = e.department) AS average_salary FROM employees e GROUP BY e.department; - syntax
+
+Stored Procedure 
+- Set of SQL statements and procedural logic that can perform operations such as inserting, deleting, and querying data 
+  CREATE OR REPLACE PROCEDURE update_emp_salary(p_employee_id INT, p_new_salary NUMERIC) 
+  LANGUAGE plpgsql 
+  AS $$
+  BEGIN 
+  UPDATE employees 
+  SET salary = p_new_salary
+  WHERE emp_id = p_employee_id;
+  END;
+  $$; - syntax
+
+  CALL update_emp_salary(3,71000); - call syntax  
+  (or)
+
+  CREATE OR REPLACE PROCEDURE add_employee(
+  p_fname VARCHAR,
+  p_lname VARCHAR,
+  p_email VARCHAR,
+  p_dept VARCHAR,
+  p_salary NUMERIC
+  )
+  LANGUAGE plpgsql
+  AS $$ 
+  BEGIN 
+  INSERT INTO employees (fname, lname, email, dept, salary)
+  VALUES (p_fname, p_lname, p_email, p_dept, p_salary );
+  END;
+  $$; 
+
+  CALL add_employee('demo','lastname','demo@mail.com','demodept',10000);
+
+Functions 
+- Custom functions created by the user to perform specfic operations and return a value 
+  CREATE OR REPLACE FUNCTION dept_max_sal_emp(dept_name VARCHAR)
+  RETURNS TABLE(emp_id INT, fname VARCHAR,  salary NUMERIC )
+  LANGUAGE plpgsql
+  AS $$
+  BEGIN
+	SELECT 
+	e.emp_id, e.fname, e.salary
+	FROM
+	employees e
+	WHERE 
+	e.dept = dept_name
+	AND 
+	e.salary = (SELECT MAX(emp.salary) FROM employees emp WHERE emp.dept = dept_name);
+	RETURN QUERY 
+  END;
+  $$; - syntax
+
+  SELECT * FROM dept_max_sal_emp('Marketing'); - call syntax
+
