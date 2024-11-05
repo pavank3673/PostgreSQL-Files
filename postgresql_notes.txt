@@ -365,3 +365,32 @@ Functions
 
   SELECT * FROM dept_max_sal_emp('Marketing'); - call syntax
 
+View 
+- Views are pseudo-tables. They are not real tables, nevertheless appear as ordinary tables to select.
+  CREATE VIEW billing_info AS
+  SELECT
+	  c.cust_name,
+	  o.ord_date,
+	  p.p_name,
+	  p.price,
+	  i.quantity,
+	  (i.quantity * p.price) as total
+
+  FROM items i
+	  JOIN
+	  	products p ON p.p_id = i.p_id
+	  JOIN
+	  	orders o ON o.ord_id = i.ord_id
+	  JOIN
+		  customers c ON c.cust_id = o.cust_id ; - syntax
+
+  SELECT * FROM billing_info; - call syntax 
+
+Cursors
+- A cursor in PostgreSQL are pointers or references to a result set of query.
+  BEGIN ;
+  DECLARE list_emps CURSOR FOR SELECT * FROM employees;
+
+  FETCH NEXT FROM list_emps;
+
+  CLOSE list_emps; - syntax
