@@ -394,3 +394,40 @@ Cursors
   FETCH NEXT FROM list_emps;
 
   CLOSE list_emps; - syntax
+
+Triggers 
+- Triggers are special procedures in a database that automatically execute predefined actions in response to certain events on a specified table or view
+  CREATE OR REPLACE FUNCTION check_salary() 
+  RETURNS TRIGGER AS $$
+  BEGIN 
+   	IF NEW.salary < 0 THEN 
+  		NEW.salary = 0;
+   	END IF;
+  	RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql - function to be triggered
+
+  CREATE TRIGGER before_update_salary
+  BEFORE UPDATE ON employees
+  FOR EACH ROW
+  EXECUTE FUNCTION check_salary(); - syntax 
+
+Index
+- It is a datastructure built and assign on top of an existing table which analyse & summarize 
+  CREATE INDEX employees_name on employees(fname); - syntax
+
+  EXPLAIN ANALYSE SELECT lname FROM employees where fname = 'demo'; - analyze syntax
+
+Normalization
+- It is the process of organizing the data in the database
+- It is performed to reduce data redundency in database 
+- Normalization works through a series of stages called normal forms 
+
+Normal Forms 
+1. First Normal Form (1NF)
+- A relation will be in 1NF if it contains an atomic value
+- First normal form disallows multi-valued attributes
+
+2. Second Normal Form (2NF)
+- A relation is in first normal form
+- Every non-prime attribute is fully functionally dependent on the primary key
