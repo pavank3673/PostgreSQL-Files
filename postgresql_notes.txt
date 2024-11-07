@@ -431,3 +431,24 @@ Normal Forms
 2. Second Normal Form (2NF)
 - A relation is in first normal form
 - Every non-prime attribute is fully functionally dependent on the primary key
+
+3. Third Normal Form (3NF)
+- A relation is in the third normal form if there is no transitive dependency for non-prime attributes as well as it is in the second normal form.
+- A transitive dependency occurs when a non-key attribute depends on the another non-key attribute rather than directly on the primary key.
+
+4. Boyce-Codd Normal Form (BCNF)
+- A table should be in the 3rd Normal form
+- X should be a superkey for every functional dependency (FD) X -> Y in a given relation 
+
+5. Fourth Normal Form (4NF) 
+- The table is in boyce-codd normal form
+- The table does not have multi-valued dependency
+- If the following requirements are met, a table is said to have a multi-valued dependency
+  - For a single value of A in the dependency A -> B, multiple values of B exist
+  - A table should have at least 3 columns 
+  - For a relation R(A, B, C), if A and B have a multi-valued dependency, then B and C should be independent of each other.
+
+6. Fifth Normal Form (5NF)
+- A relation should be already in 4NF
+- It cannot be further non-loss decomposed
+- When the table does not contain any join dependency then it is called a lossless/non-loss decomposition
